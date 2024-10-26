@@ -17,12 +17,12 @@ func NewProcessModel() *ProcesstModel {
 	columns := []table.Column{
 		{Title: "S/N", Width: 4},
 		{Title: "Port", Width: 10},
+		{Title: "PID", Width: 10},
 		{Title: "Application", Width: 10},
-		{Title: "Population", Width: 10},
 	}
 
 	rows := []table.Row{
-		{"1", "Port 1", "Japan", "37,274,000"},
+		{"1", "3000", "93940", "Nodejs runtime"},
 	}
 
 	t := table.New(
