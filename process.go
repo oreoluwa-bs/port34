@@ -6,8 +6,15 @@ type Process struct {
 	PID         string
 }
 
-func GetOpenProcess() []Process {
+func GetProcesses() []Process {
 	var p []Process
+
+	p = append(p, Process{
+		Port:        "3000",
+		PID:         "93940",
+		Application: "Nodejs runtime",
+	},
+	)
 
 	return p
 }

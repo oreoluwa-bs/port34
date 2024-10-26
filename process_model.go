@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,15 +15,19 @@ type ProcesstModel struct {
 func NewProcessModel() *ProcesstModel {
 	pm := ProcesstModel{}
 
+	processes := GetProcesses()
+
 	columns := []table.Column{
-		{Title: "S/N", Width: 4},
+		{Title: "S/N", Width: 8},
 		{Title: "Port", Width: 10},
 		{Title: "PID", Width: 10},
-		{Title: "Application", Width: 10},
+		{Title: "Application", Width: 40},
 	}
 
-	rows := []table.Row{
-		{"1", "3000", "93940", "Nodejs runtime"},
+	rows := []table.Row{}
+	for i, p := range processes {
+		n := strconv.Itoa(i + 1)
+		rows = append(rows, []string{n, p.Port, p.PID, p.Application})
 	}
 
 	t := table.New(
