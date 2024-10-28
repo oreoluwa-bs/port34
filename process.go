@@ -25,7 +25,6 @@ func GetProcesses() []Process {
 
 	out, err := cmd.Output()
 	if err != nil {
-		// if there was any error, print it here
 		log.Println("could not run command: ", err)
 	}
 
