@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"log"
 	"os/exec"
 	"strings"
@@ -25,7 +24,7 @@ func GetProcesses() []Process {
 
 	out, err := cmd.Output()
 	if err != nil {
-		log.Println("could not run command: ", err)
+		log.Panic("could not run command: ", err)
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(out)))
@@ -54,8 +53,19 @@ func GetProcesses() []Process {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading lsof output:", err)
+		log.Panic("Error reading lsof output:", err)
 	}
 
 	return p
+}
+
+func (p *Process) kill() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "kill", "-9", p.PID)
+
+	_, err := cmd.Output()
+	if err != nil {
+		log.Panicf("could not terminate process (%s %s): %v \n", p.Application, p.PID, err)
+	}
 }
