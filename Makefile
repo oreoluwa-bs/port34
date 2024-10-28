@@ -11,7 +11,7 @@ build:
 run: build
 	./bin/$(BINARY_NAME)
 
-run-dev:
+dev:
 	go run ./
 
 clean:
