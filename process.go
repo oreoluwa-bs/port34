@@ -36,7 +36,7 @@ func GetProcesses() []Process {
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		if len(fields) < 9 {
-			continue // Skip lines that don't match expected structure
+			continue
 		}
 
 		entry := Process{
@@ -54,11 +54,9 @@ func GetProcesses() []Process {
 		p = append(p, entry)
 	}
 
-
 	if err := scanner.Err(); err != nil {
-        fmt.Println("Error reading lsof output:", err)
-    }
-
+		fmt.Println("Error reading lsof output:", err)
+	}
 
 	return p
 }
