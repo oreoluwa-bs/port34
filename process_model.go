@@ -19,7 +19,7 @@ func NewProcessModel() *ProcesstModel {
 
 	columns := []table.Column{
 		{Title: "S/N", Width: 8},
-		{Title: "Port", Width: 10},
+		{Title: "Port", Width: 40},
 		{Title: "PID", Width: 10},
 		{Title: "Application", Width: 40},
 	}
@@ -63,6 +63,19 @@ func (pm ProcesstModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				pm.table.Focus()
 			}
+
+		case "k":
+			r := pm.table.SelectedRow()
+			p := Process{
+				Port:        r[1],
+				PID:         r[2],
+				Application: r[3],
+			}
+			p.kill()
+
+			nPm := NewProcessModel()
+			pm = *nPm
+			return pm, nil
 
 		case "enter":
 			return pm, tea.Batch(

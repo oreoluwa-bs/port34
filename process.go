@@ -64,8 +64,7 @@ func (p *Process) kill() {
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "kill", "-9", p.PID)
 
-	_, err := cmd.Output()
-	if err != nil {
-		log.Panicf("could not terminate process (%s %s): %v \n", p.Application, p.PID, err)
+	if _, err := cmd.Output(); err != nil {
+		log.Panicf("could not terminate process (%s - %s): %v \n", p.Application, p.PID, err)
 	}
 }
