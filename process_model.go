@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/charmbracelet/bubbles/table"
@@ -10,6 +9,10 @@ import (
 
 type ProcesstModel struct {
 	table table.Model
+}
+
+type updateProcessesMsg struct {
+	process []Process
 }
 
 func NewProcessModel() *ProcesstModel {
@@ -51,7 +54,19 @@ func (pm ProcesstModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		fmt.Println(msg.Height)
+		pm.table.SetWidth(msg.Width)
+		pm.table.SetHeight(msg.Height)
+
+	case updateProcessesMsg:
+		r := []table.Row{}
+		for i, p := range msg.process {
+			n := strconv.Itoa(i + 1)
+			r = append(r, []string{n, p.Port, p.PID, p.Application})
+		}
+		pm.table.SetRows(r)
+
+		return pm, nil
+
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
@@ -73,9 +88,7 @@ func (pm ProcesstModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			p.kill()
 
-			nPm := NewProcessModel()
-			pm = *nPm
-			return pm, nil
+			return pm, tea.Batch(refetchProcesses)
 
 		case "enter":
 			return pm, tea.Batch(
@@ -86,6 +99,14 @@ func (pm ProcesstModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	pm.table, cmd = pm.table.Update(msg)
 	return pm, cmd
+}
+
+func refetchProcesses() tea.Msg {
+	newP := GetProcesses()
+
+	return updateProcessesMsg{
+		process: newP,
+	}
 }
 
 func (pm ProcesstModel) View() string {
